@@ -5,20 +5,26 @@ import { deleteCar } from "../store";
 function CarList() {
   const dispatch = useDispatch();
 
-  const cars = useSelector(({ cars: { list, searchTerm } }) => {
-    return list.filter((car) =>
+  const { cars, name } = useSelector(({ form, cars: { list, searchTerm } }) => {
+    const filteredCars = list.filter((car) =>
       car.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    return {
+      cars: filteredCars,
+      name: form.name,
+    };
   });
-  const name = useSelector((state) => state.form.name);
 
   const handleCarDelete = (car) => {
     dispatch(deleteCar(car.id));
   };
 
   const renderedCars = cars.map((car) => {
+    const bold = name && car.name.toLowerCase().includes(name.toLowerCase());
+
     return (
-      <div key={car.id} className="panel">
+      <div key={car.id} className={`panel ${bold && "bold"}`}>
         <p>
           {car.name} - €{car.cost}
         </p>
